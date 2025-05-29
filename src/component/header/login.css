@@ -1,0 +1,12 @@
+.header {
+    & > div {
+        justify-content: center;
+    }
+    img {
+        vertical-align: middle;
+        margin-right: 6px;
+        padding-bottom: 3px;
+        height: 38px;
+        width: 38px;
+    }
+}

@@ -1,4 +1,7 @@
-export default function Header(){
+import "./header.css";
+import "./logged.css";
+
+export default function HeaderLogged(){
     return (
         <header className={"header"}>
             <div>
