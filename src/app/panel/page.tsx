@@ -24,14 +24,12 @@ const users = [
     },
     // Add more users here
 ];
-
 export default function Home() {
     const [query, setQuery] = useState("");
 
     const filteredUsers = users.filter((user) =>
         `${user.firstname} ${user.lastname} ${user.email} ${user.birthDate}`.toLowerCase().includes(query.toLowerCase())
     );
-
     return (
         <>
             <HeaderLogged />
