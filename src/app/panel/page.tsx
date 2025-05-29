@@ -22,7 +22,7 @@ const users = [
         birthDate: "2005-12-15",
         avatarUrl: "",
     },
-    // Add more users here
+    // zde se dají přídávat další uživatelé
 ];
 export default function Home() {
     const [query, setQuery] = useState("");
