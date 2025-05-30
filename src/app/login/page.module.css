@@ -20,7 +20,8 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
-    input[type="email"], input[type="password"], input[type="submit"]  {
+    input[type="email"], input[type="password"], input[type="submit"], button {
+        align-items: center;
         height: 56px;
         font-size: 16px;
         font-weight: 600;
@@ -29,7 +30,7 @@
         display: flex;
         border-radius: 8px;
     }
-    input[type="email"], input[type="password"]  {
+    input[type="email"], input[type="password"] {
         color: #373737;
         background-color: white;
     }
@@ -48,5 +49,16 @@
         border-radius: 6px;
         height: 16px;
         width: 16px;
+    }
+    button {
+        justify-content: center;
+        background: linear-gradient(#555555, #333333);
+        color: white;
+        text-transform: uppercase;
+    }
+    h3 {
+        text-align: center;
+        font-size: 24px;
+        font-weight: 400;
     }
 }
