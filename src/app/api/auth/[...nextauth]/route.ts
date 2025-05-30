@@ -14,8 +14,8 @@ export const authOptions: NextAuthOptions = {
                 const user = {
                     id: "1",
                     name: "Admin",
-                    email: "admin@example.com",
-                    password: "tajneheslo",
+                    email: "wilhelmskyba@tutanota.de",
+                    password: "123",
                 };
 
                 if (
