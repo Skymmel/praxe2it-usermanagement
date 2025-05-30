@@ -3,7 +3,6 @@ import { useState } from "react";
 import styles from "./page.module.css";
 import UserCard from "@/component/userCard/UserCard";
 import SearchBar from "@/component/searchbar/SearchBar";
-import HeaderLogged from "@/component/header/HeaderLogged";
 import { users } from "../users";
 
 export default function Home() {
