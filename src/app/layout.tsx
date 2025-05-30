@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import HeaderLogged from "@/component/header/HeaderLogged";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,9 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+      <HeaderLogged/>
+      {children}
       </body>
     </html>
   );
 }
-//className={`${geistSans.variable} ${geistMono.variable}`}

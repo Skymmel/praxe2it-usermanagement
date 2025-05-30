@@ -13,22 +13,19 @@ export default function Home() {
         `${user.firstname} ${user.lastname} ${user.email} ${user.birthDate}`.toLowerCase().includes(query.toLowerCase())
     );
     return (
-        <>
-            <HeaderLogged />
-            <main>
-                <header className={styles.header}>
-                    <h2>Users</h2>
-                    <p>Management</p>
-                </header>
-                <div className={styles.panel}>
-                    <SearchBar value={query} onChange={setQuery}/>
-                </div>
-                <div className={styles.userList}>
-                    {filteredUsers.map((user, index) => (
-                        <UserCard key={index} {...user} />
-                    ))}
-                </div>
-            </main>
-        </>
+        <main>
+            <header className={styles.header}>
+                <h2>Users</h2>
+                <p>Management</p>
+            </header>
+            <div className={styles.panel}>
+                <SearchBar value={query} onChange={setQuery}/>
+            </div>
+            <div className={styles.userList}>
+                {filteredUsers.map((user, index) => (
+                    <UserCard key={index} {...user} />
+                ))}
+            </div>
+        </main>
     );
 }
