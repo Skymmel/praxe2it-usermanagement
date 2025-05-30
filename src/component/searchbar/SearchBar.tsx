@@ -1,5 +1,5 @@
 import React from "react";
-import "./styles.css";
+import "./searchbar.css";
 interface SearchBarProps {
     placeholder?: string;
     value: string;

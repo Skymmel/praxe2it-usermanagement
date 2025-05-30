@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import './styles.css'; // nebo použij `module.css` dle struktury
+import './roleselector.css'; // nebo použij `module.css` dle struktury
 
 type Props = {
     role: string;

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import styles from "./page.module.css";
-import UserCard from "@/component/userCard/UserCard";
+import UserCard from "@/component/usercard/UserCard";
 import SearchBar from "@/component/searchbar/SearchBar";
 import { users } from "../users";
 
