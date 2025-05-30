@@ -4,26 +4,8 @@ import styles from "./page.module.css";
 import UserCard from "@/component/userCard/UserCard";
 import SearchBar from "@/component/searchbar/SearchBar";
 import HeaderLogged from "@/component/header/HeaderLogged";
+import { users } from "../users";
 
-const users = [
-    {
-        firstname: "Wilhelm",
-        lastname: "Skyba",
-        role: "Admin",
-        email: "wilhelmskyba@tutanota.de",
-        birthDate: "2005-12-15",
-        avatarUrl: "https://i.pinimg.com/736x/75/2d/34/752d3412b28c9f87a8b08a717c3e35ef.jpg",
-    },
-    {
-        firstname: "František",
-        lastname: "Šesták",
-        role: "User",
-        email: "@.",
-        birthDate: "2005-12-15",
-        avatarUrl: "",
-    },
-    // zde se dají přídávat další uživatelé
-];
 export default function Home() {
     const [query, setQuery] = useState("");
 
