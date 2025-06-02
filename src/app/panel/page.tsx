@@ -4,7 +4,6 @@ import styles from "./page.module.css";
 import UserCard from "@/component/usercard/UserCard";
 import SearchBar from "@/component/searchbar/SearchBar";
 import {User} from "@/lib/users";
-import RoleSelector from "@/component/roleselector/RoleSelector";
 
 export default function Home() {
     const [users, setUsers] = useState<User[]>([]);
