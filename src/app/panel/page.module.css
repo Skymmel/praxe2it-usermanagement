@@ -47,5 +47,18 @@
 .filtersByRole {
     display: flex;
     gap: 8px;
-
+}
+.searchAndAddUser {
+    display: flex;
+    gap: 8px;
+    a {
+        display: flex;
+        height: 40px;
+        border-radius: 20px;
+        padding: 0 16px;
+        align-items: center;
+        text-decoration: none;
+        color: #151515;
+        background-color: #b8e7b2;
+    }
 }

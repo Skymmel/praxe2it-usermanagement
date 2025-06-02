@@ -35,7 +35,10 @@ export default function Home() {
                         <button>User</button>
                         <button>All</button>
                     </div>
-                    <SearchBar value={query} onChange={setQuery}/>
+                    <div className={styles.searchAndAddUser}>
+                        <a href={"/adduser/"}>Add User</a>
+                        <SearchBar value={query} onChange={setQuery}/>
+                    </div>
                 </div>
             </div>
             <div className={styles.userList}>
