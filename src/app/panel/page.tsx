@@ -20,12 +20,18 @@ export default function Home() {
     const [users, setUsers] = useState<User[]>([]);
     const [query, setQuery] = useState("");
     const [selectedRole, setSelectedRole] = useState<"admin" | "supervisor" | "user" | "All">("All");
+    const [confirmDeleteUser, setConfirmDeleteUser] = useState<User | null>(null);
 
     useEffect(() => {
         fetch("/api/users")
             .then((response) => response.json())
             .then((data) => setUsers(data));
     }, []);
+
+    const handleDeleteUser = async (email: string) => {
+        setUsers((prev) => prev.filter((user) => user.email !== email));
+        setConfirmDeleteUser(null);
+    };
 
     const filteredUsers = users.filter((user) => {
         const matchesQuery =
@@ -71,9 +77,32 @@ export default function Home() {
 
             <div className={styles.userList}>
                 {filteredUsers.map((user, index) => (
-                    <UserCard key={index} {...user} />
+                    <UserCard
+                        key={index}
+                        {...user}
+                        onDelete={() => setConfirmDeleteUser(user)}
+                        sessionUserRole={session?.user?.role ?? "user"} // 👈 TADY JE TO PŘIDANÉ
+                    />
                 ))}
             </div>
+
+            {confirmDeleteUser && (
+                <div className={styles.confirmOverlay}>
+                    <div className={styles.confirmBox}>
+                        <p>
+                            Opravdu chcete odstranit uživatele{" "}
+                            <strong>
+                                {confirmDeleteUser.firstName} {confirmDeleteUser.lastName}
+                            </strong>
+                            ?
+                        </p>
+                        <div className={styles.confirmButtons}>
+                            <button onClick={() => handleDeleteUser(confirmDeleteUser.email)}>Ano</button>
+                            <button onClick={() => setConfirmDeleteUser(null)}>Ne</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }

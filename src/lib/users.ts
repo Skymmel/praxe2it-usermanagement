@@ -25,6 +25,14 @@ export const users: User[] = [
         birthDate: "2005-12-15",
         password: "userpass",
     },
+    {
+        firstName: "Karel",
+        lastName: "Elíš",
+        role: "admin",
+        email: "swrpclothes@gmail.com",
+        birthDate: "2008-03-01",
+        password: "admin",
+    },
 ];
 
 export function findUserByEmail(email: string) {
