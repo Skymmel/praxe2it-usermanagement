@@ -7,9 +7,7 @@ import "./header.css";
 export default function Header() {
     const { data: session, status } = useSession();
     const router = useRouter();
-
     if (status === "loading") return null;
-
     return (
         <header className={"header"}>
             <div>

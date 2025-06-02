@@ -22,6 +22,7 @@
 .panel {
     margin: 24px 0;
     button {
+        cursor: pointer;
         display: flex;
         font-size: 14px;
         height: 32px;
@@ -47,6 +48,11 @@
 .filtersByRole {
     display: flex;
     gap: 8px;
+    button:disabled {
+        background-color: #ccc;
+        color: #151515;
+        cursor: not-allowed;
+    }
 }
 .searchAndAddUser {
     display: flex;
