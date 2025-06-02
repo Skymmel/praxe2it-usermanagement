@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 import UserCard from "@/component/usercard/UserCard";
 import SearchBar from "@/component/searchbar/SearchBar";
 import {User} from "@/lib/users";
+import RoleSelector from "@/component/roleselector/RoleSelector";
 
 export default function Home() {
     const [users, setUsers] = useState<User[]>([]);
@@ -26,7 +27,16 @@ export default function Home() {
                 <p>Management</p>
             </header>
             <div className={styles.panel}>
-                <SearchBar value={query} onChange={setQuery}/>
+                <span>Filters</span>
+                <div className={styles.filters}>
+                    <div className={styles.filtersByRole}>
+                        <button>Admin</button>
+                        <button>Supervisor</button>
+                        <button>User</button>
+                        <button>All</button>
+                    </div>
+                    <SearchBar value={query} onChange={setQuery}/>
+                </div>
             </div>
             <div className={styles.userList}>
                 {filteredUsers.map((user, index) => (
