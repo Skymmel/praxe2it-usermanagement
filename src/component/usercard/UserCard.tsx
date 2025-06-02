@@ -37,6 +37,8 @@ export default function UserCard({
                     </li>
                 </ul>
             </div>
+            <button className={"edit"}></button>
+            <button className={"remove"}></button>
         </div>
     );
 }
