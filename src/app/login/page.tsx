@@ -62,9 +62,6 @@ export default function LoginPage() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <label htmlFor="remember">
-                        <input type="checkbox" className="checkbox_login" id="remember" name="remember" /> Remember me
-                    </label>
                     {error && <p style={{ color: "red" }}>{error}</p>}
                     <input type="submit" value="Login" />
                 </form>
