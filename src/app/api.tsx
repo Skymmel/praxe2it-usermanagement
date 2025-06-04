@@ -135,15 +135,12 @@ export async function GetUser(username: string): Promise<User | null> {
         method: 'GET',
         cache: 'no-store',
     });
-
     if (!response.ok) {
         console.log(`Získání uživatelů selhalo: ${response.status}`);
         return null;
     }
-
     const users: User[] = await response.json();
     const user = users.find(u => u.username === username);
-
     return user ?? null;
 }
 
