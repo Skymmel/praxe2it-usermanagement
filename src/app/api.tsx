@@ -119,3 +119,32 @@ export async function GetUsers(){
 //     }, []);
 //     return users;
 // }
+
+interface User {
+    firstname: string,
+    lastname: string,
+    username: string,
+    password: string,
+    eMail: string,
+    age: number,
+    role: string
+}
+
+export async function GetUser(username: string): Promise<User | null> {
+    const response = await fetch('https://localhost:5000/api/UM/GetUsers', {
+        method: 'GET',
+        cache: 'no-store',
+    });
+
+    if (!response.ok) {
+        console.log(`Získání uživatelů selhalo: ${response.status}`);
+        return null;
+    }
+
+    const users: User[] = await response.json();
+    const user = users.find(u => u.username === username);
+
+    return user ?? null;
+}
+
+
