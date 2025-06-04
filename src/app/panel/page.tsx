@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import UserCard from "@/component/usercard/UserCard";
 import SearchBar from "@/component/searchbar/SearchBar";
-import { User } from "../api"; // Importujte User rozhraní
+import { User } from "../api";
 
 export default function Home() {
     const [users, setUsers] = useState<User[]>([]);
