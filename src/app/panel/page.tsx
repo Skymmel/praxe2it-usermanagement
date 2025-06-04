@@ -1,64 +1,75 @@
+// app/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import UserCard from "@/component/usercard/UserCard";
 import SearchBar from "@/component/searchbar/SearchBar";
-import { User } from "@/lib/users";
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { User } from "../api"; // Importujte User rozhraní
 
 export default function Home() {
-    const { data: session, status } = useSession();
-
-    if (status === "loading") return <p>Loading...</p>;
-    if (status === "unauthenticated") {
-        redirect("/login");
-        return null;
-    }
-
     const [users, setUsers] = useState<User[]>([]);
     const [query, setQuery] = useState("");
     const [selectedRole, setSelectedRole] = useState<"admin" | "supervisor" | "user" | "All">("All");
     const [confirmDeleteUser, setConfirmDeleteUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("/api/users")
-            .then((response) => response.json())
-            .then((data) => setUsers(data));
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch("/api/users");
+                if (!response.ok) throw new Error("Chyba při načítání uživatelů");
+                const data = await response.json();
+                setUsers(data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUsers();
     }, []);
 
     const handleDeleteUser = async (email: string) => {
-        setUsers((prev) => prev.filter((user) => user.email !== email));
+        try {
+            await fetch(`/api/users?email=${encodeURIComponent(email)}`, {
+                method: "DELETE"
+            });
+            setUsers(prev => prev.filter(user => user.eMail !== email));
+        } catch (error) {
+            console.error("Chyba při mazání uživatele:", error);
+        }
         setConfirmDeleteUser(null);
     };
 
-    const filteredUsers = users.filter((user) => {
-        const matchesQuery =
-            `${user.firstName} ${user.lastName} ${user.email} ${user.birthDate}`
-                .toLowerCase()
-                .includes(query.toLowerCase());
+    const filteredUsers = users.filter(user => {
+        const matchesQuery = `${user.firstname} ${user.lastname} ${user.eMail} ${user.age}`
+            .toLowerCase()
+            .includes(query.toLowerCase());
 
         const matchesRole = selectedRole === "All" || user.role === selectedRole;
 
         return matchesQuery && matchesRole;
     });
 
+    if (loading) return <div className={styles.loading}>Načítám uživatele...</div>;
+
     return (
         <main>
             <header className={styles.header}>
-                <h2>Users</h2>
-                <p>Management</p>
+                <h2>Uživatelé</h2>
+                <p>Správa uživatelů</p>
             </header>
 
             <div className={styles.panel}>
-                <span>Filters</span>
+                <span>Filtry</span>
                 <div className={styles.filters}>
                     <div className={styles.filtersByRole}>
-                        {["All", "admin", "supervisor", "user"].map((role) => (
+                        {["All", "admin", "supervisor", "user"].map(role => (
                             <button
                                 key={role}
-                                onClick={() => setSelectedRole(role as typeof selectedRole)}
+                                onClick={() => setSelectedRole}
                                 disabled={selectedRole === role}
                             >
                                 {role.charAt(0).toUpperCase() + role.slice(1)}
@@ -67,21 +78,24 @@ export default function Home() {
                     </div>
 
                     <div className={styles.searchAndAddUser}>
-                        {(session?.user?.role === "admin" || session?.user?.role === "supervisor") && (
-                            <a href={"/adduser/"}>Add User</a>
-                        )}
+                        <a href="/adduser/">Přidat uživatele</a>
                         <SearchBar value={query} onChange={setQuery} />
                     </div>
                 </div>
             </div>
 
             <div className={styles.userList}>
-                {filteredUsers.map((user, index) => (
+                {filteredUsers.map(user => (
                     <UserCard
-                        key={index}
-                        {...user}
+                        key={user.username}
+                        firstname={user.firstname}
+                        lastname={user.lastname}
+                        username={user.username}
+                        eMail={user.eMail} // Předáváme eMail jako email
+                        age={user.age}
+                        role={user.role}
                         onDelete={() => setConfirmDeleteUser(user)}
-                        sessionUserRole={session?.user?.role ?? "user"} // 👈 TADY JE TO PŘIDANÉ
+                        sessionUserRole="admin" // Mělo by být dynamické
                     />
                 ))}
             </div>
@@ -92,13 +106,17 @@ export default function Home() {
                         <p>
                             Opravdu chcete odstranit uživatele{" "}
                             <strong>
-                                {confirmDeleteUser.firstName} {confirmDeleteUser.lastName}
+                                {confirmDeleteUser.firstname} {confirmDeleteUser.lastname}
                             </strong>
                             ?
                         </p>
                         <div className={styles.confirmButtons}>
-                            <button onClick={() => handleDeleteUser(confirmDeleteUser.email)}>Ano</button>
-                            <button onClick={() => setConfirmDeleteUser(null)}>Ne</button>
+                            <button onClick={() => handleDeleteUser(confirmDeleteUser.eMail)}>
+                                Ano
+                            </button>
+                            <button onClick={() => setConfirmDeleteUser(null)}>
+                                Ne
+                            </button>
                         </div>
                     </div>
                 </div>

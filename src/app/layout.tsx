@@ -1,26 +1,18 @@
-'use client'
+import type {Metadata} from "next";
 import "./globals.css";
 import Header from "@/component/header/Header";
 import React from "react";
-import {SessionProvider} from "next-auth/react";
-import { Session } from 'next-auth'
-
-interface Props {
-    session: Session | null
-    children: React.ReactNode
-}
-
-const RootLayout: React.FC <Props> = ({ children, session } ) => {
+export const metadata: Metadata = {
+    title: "User Manager",
+    description: "User Manager",
+};
+export default function RootLayout({children,}: Readonly<{ children: React.ReactNode; }>) {
     return (
-    <html lang="en">
-      <body>
-      <SessionProvider session={session}>
-          <Header/>
-          {children}
-      </SessionProvider>
-      </body>
-    </html>
-  );
+        <html lang="en">
+        <body>
+        <Header/>
+        {children}
+        </body>
+        </html>
+    );
 }
-
-export default RootLayout

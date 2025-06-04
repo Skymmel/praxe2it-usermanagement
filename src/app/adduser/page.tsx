@@ -3,40 +3,30 @@ import { useState } from 'react';
 import styles from './page.module.css';
 import RoleSelector from "@/component/roleselector/RoleSelector";
 import {useRouter} from "next/navigation";
-import {getSession} from "next-auth/react";
-
+import {createUser} from "@/app/api";
 export default function Home() {
     const router = useRouter();
-
-    getSession().then(session => {
-        if (session?.user?.role !== 'admin') {
-            router.replace("/panel");
-        }
-    })
-
     const [role, setRole] = useState('user');
+    const [username, setUsername] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [dob, setDob] = useState('');
-    const [email, setEmail] = useState('');
+    const [age, setAge] = useState('');
+    const [eMail, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        await fetch('/api/users', {
-            method: 'POST',
-            body: JSON.stringify({
-                firstName: firstName,
-                lastName: lastName,
-                role: role,
-                email: email,
-                birthDate: dob,
-                password: password,
-            }),
-        })
-        router.push('/panel');
+        console.log ("volám login");
+        const result = await createUser(firstName, lastName, username, password, eMail, Number(age), role);
+        if (result) {
+            console.log(`Přidán nový uživatel ${username}.`)
+            router.push("/panel");
+        }
+        else {
+            setError("Akce se nazdařila");
+            alert(`Chyba: ${e}.`)
+        }
     };
-
     return (
         <main>
             <header className={styles.headings}>
@@ -45,6 +35,14 @@ export default function Home() {
             </header>
 
             <form onSubmit={handleSubmit} className={styles.form}>
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="USERNAME"
+                    value={username}
+                    onChange={event => setUsername(event.target.value)}
+                    required
+                />
                 <input
                     type="text"
                     name="firstName"
@@ -62,18 +60,18 @@ export default function Home() {
                     required
                 />
                 <input
-                    type="date"
+                    type="number"
                     name="dob"
-                    placeholder="Date of Birth"
-                    value={dob}
-                    onChange={event => setDob(event.target.value)}
+                    placeholder="Age"
+                    value={age}
+                    onChange={event => setAge(event.target.value)}
                     required
                 />
                 <input
                     type="email"
                     name="email"
                     placeholder="E-mail"
-                    value={email}
+                    value={eMail}
                     onChange={event => setEmail(event.target.value)}
                     required
                 />
@@ -85,10 +83,9 @@ export default function Home() {
                     onChange={event => setPassword(event.target.value)}
                     required
                 />
-
-                <RoleSelector role={role} setRole={setRole} />
-
-                <input type="submit" value="Add user" />
+                <RoleSelector role={role} setRole={setRole}/>
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                <input type="submit" value="Add user"/>
             </form>
         </main>
     );

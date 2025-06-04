@@ -1,16 +1,22 @@
-export async function login(username: string, password: string): Promise<void> {
-    const loginResponse = async () => {
-        const response = await fetch (`https://localhost:5000/api/UM/Login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
-            {headers: {'Content-Type': 'application/json'},    method: 'PUT'});
+export async function login(username: string, password: string): Promise<boolean> {
+    try {
+        const url = `https://localhost:5000/api/UM/Login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'}
+        });
 
         if (response.ok) {
             console.log('Přihlášení úspěšné (status:', response.status, ')');
+            return true;
         } else {
             console.error('Přihlášení selhalo (status:', response.status, ')');
+            return false;
         }
-    };
-
-    await loginResponse();
+    } catch (error) {
+        console.error('Chyba při přihlašování:', error);
+        return false;
+    }
 }
 export async function logout(username: string): Promise<void> {
     const logoutResponse = async () => {
@@ -41,30 +47,34 @@ export async function deleteUser(username: string): Promise<void> {
     };
     await deleteUserResponse();
 }
-export async function createUser(firstname: string, lastname: string, username: string, password: string,eMail: string, age: number, role: string) {
-    const createUserResponse = async () => {
+export async function createUser(
+    firstname: string,
+    lastname: string,
+    username: string,
+    password: string,
+    eMail: string,
+    age: number,
+    role: string
+): Promise<boolean> {
+    try {
         const response = await fetch('https://localhost:5000/api/UM/CreateUser', {
-            headers: {
-                'Content-Type': 'application/json',
-            },
             method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                'name': firstname,
-                'surname': lastname,
-                'username': username,
-                'password': password,
-                'eMail': eMail,
-                'age': age,
-                'role': role,
+                name: firstname,
+                surname: lastname,
+                username: username,
+                password: password,
+                eMail: eMail,
+                age: age,
+                role: role
             })
         });
-        if (response.ok) {
-            console.log('Vytvoření uživatele úspěšné (status:', response.status, ')');
-        } else {
-            console.error('Vytvoření uživatele selhalo (status:', response.status, ')');
-        }
+        return response.ok;
+    } catch (error) {
+        console.error('Chyba:', error);
+        return false;
     }
-    await createUserResponse();
 }
 
 export async function updateUser(username:string, firstname:string, lastname:string, usernameEdited:string, password:string, eMail:string, age:number, role:string) {
@@ -92,6 +102,15 @@ export async function updateUser(username:string, firstname:string, lastname:str
     }
     await updateUserResponse();
 }
+export interface User {
+    firstname: string;
+    lastname: string;
+    username: string;
+    password: string;
+    eMail: string;
+    age: number;
+    role: string;
+}
 
 export async function GetUsers(): Promise<User[]> {
     try {
@@ -100,49 +119,21 @@ export async function GetUsers(): Promise<User[]> {
         });
 
         if (!response.ok) {
-            throw new Error(`Chyba serveru: ${response.status}`);
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: unknown = await response.json();
-        console.log('Získaná data:', data);
+        const data = await response.json();
 
         if (!Array.isArray(data)) {
-            throw new Error('Očekáváno pole uživatelů');
+            throw new Error('Expected an array of users');
         }
 
-        // Nepovinně: můžeš si ověřit tvar dat (např. pomocí zod nebo ručně)
         return data as User[];
     } catch (error) {
         console.error('Chyba při získávání uživatelů:', error);
-        return [];
+        throw error;
     }
 }
-
-// Volání funkce (například v serverové komponentě nebo efektu)
-// const users = await GetUsers();
-// export async function GetUsers(){
-//     const [users, setUsers] = useState([]);
-//     useEffect(() => {
-//         const fetchUsers = async () => {
-//             const response = await fetch('https://localhost:5000/api/UM/GetUsers');
-//             const data = await response.json();
-//             setUsers(data);
-//         };
-//         fetchUsers();
-//     }, []);
-//     return users;
-// }
-
-interface User {
-    firstname: string,
-    lastname: string,
-    username: string,
-    password: string,
-    eMail: string,
-    age: number,
-    role: string
-}
-
 export async function GetUser(username: string): Promise<User | null> {
     const response = await fetch('https://localhost:5000/api/UM/GetUsers', {
         method: 'GET',
