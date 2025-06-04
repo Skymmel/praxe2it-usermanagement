@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import styles from "./page.module.css";
+import styles from "../../../../../Desktop/t/te/page.module.css";
+import { login } from "../api.tsx";
 
 export default function LoginPage() {
     const { data: session, status } = useSession();
@@ -15,11 +16,15 @@ export default function LoginPage() {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const result = await signIn("credentials", {
-            email,
-            password,
-            redirect: false,
-        });
+        //const result = await signIn("credentials", {
+        //    email,
+        //    password,
+        //    redirect: false,
+        //});
+
+        console.log ("volám login");
+
+        const result = await login (email, password);
 
         if (result?.ok) {
             router.push("/panel");
@@ -47,7 +52,7 @@ export default function LoginPage() {
             ) : (
                 <form className={styles.loginContainer} onSubmit={handleLogin}>
                     <input
-                        type="email"
+                        type="text"
                         className="email_input"
                         id="email"
                         placeholder="E-MAIL"
