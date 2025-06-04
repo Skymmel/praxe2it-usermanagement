@@ -16,8 +16,9 @@ export default function Home() {
     const [error, setError] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
-        console.log ("volám login");
-        const result = await createUser(firstName, lastName, username, password, eMail, Number(age), role);
+        console.log ("volám create user");
+        const user = new User (firstName, lastName, username, password, eMail, Number(age), role);
+        const result = await createUser(user);
         if (result) {
             console.log(`Přidán nový uživatel ${username}.`)
             router.push("/panel");

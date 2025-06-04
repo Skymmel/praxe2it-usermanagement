@@ -40,34 +40,28 @@ export async function deleteUser(username: string): Promise<void> {
                 method: 'PUT'
         });
         if (response.ok) {
-            console.log('Odlášení úspěšné (status:', response.status, ')');
+            console.log('Vymazání úspěšné (status:', response.status, ')');
         } else {
-            console.error('Odlášení selhalo (status:', response.status, ')');
+            console.error('Vymazání selhalo (status:', response.status, ')');
         }
     };
     await deleteUserResponse();
 }
 export async function createUser(
-    firstname: string,
-    lastname: string,
-    username: string,
-    password: string,
-    eMail: string,
-    age: number,
-    role: string
+    user: User
 ): Promise<boolean> {
     try {
         const response = await fetch('https://localhost:5000/api/UM/CreateUser', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                name: firstname,
-                surname: lastname,
-                username: username,
-                password: password,
-                eMail: eMail,
-                age: age,
-                role: role
+                name: user.firstname,
+                surname: user.lastname,
+                username: user.username,
+                password: user.password,
+                eMail: user.eMail,
+                age: user.age,
+                role: user.role
             })
         });
         return response.ok;
@@ -77,7 +71,7 @@ export async function createUser(
     }
 }
 
-export async function updateUser(username:string, firstname:string, lastname:string, usernameEdited:string, password:string, eMail:string, age:number, role:string) {
+export async function updateUser(username:string. user: User) {
     const updateUserResponse = async () => {
         const response = await fetch(`https://localhost:5000/api/UM/UpdateUser?username=${encodeURIComponent(username)}`, {
             headers: {
@@ -85,13 +79,13 @@ export async function updateUser(username:string, firstname:string, lastname:str
             },
             method: 'PUT',
             body: JSON.stringify({
-                'name': firstname,
-                'surname': lastname,
-                'username': usernameEdited,
-                'password': password,
-                'eMail': eMail,
-                'age': age,
-                'role': role,
+                'name': user.firstname,
+                'surname': user.lastname,
+                'username': user.username,
+                'password': user.password,
+                'eMail': user.eMail,
+                'age': user.age,
+                'role': user.role,
             })
         });
         if (response.ok) {

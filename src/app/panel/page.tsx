@@ -1,11 +1,10 @@
-// app/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import UserCard from "@/component/usercard/UserCard";
 import SearchBar from "@/component/searchbar/SearchBar";
-import { User } from "../api";
+import { GetUsers, deleteUser, User } from "../api";
 
 export default function Home() {
     const [users, setUsers] = useState<User[]>([]);
@@ -17,9 +16,7 @@ export default function Home() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await fetch("/api/users");
-                if (!response.ok) throw new Error("Chyba při načítání uživatelů");
-                const data = await response.json();
+                const data = await GetUsers();
                 setUsers(data);
             } catch (error) {
                 console.error(error);
@@ -31,12 +28,10 @@ export default function Home() {
         fetchUsers();
     }, []);
 
-    const handleDeleteUser = async (email: string) => {
+    const handleDeleteUser = async (username: string) => {
         try {
-            await fetch(`/api/users?email=${encodeURIComponent(email)}`, {
-                method: "DELETE"
-            });
-            setUsers(prev => prev.filter(user => user.eMail !== email));
+            await deleteUser(username);
+            setUsers(prev => prev.filter(user => user.username !== username));
         } catch (error) {
             console.error("Chyba při mazání uživatele:", error);
         }
@@ -69,7 +64,7 @@ export default function Home() {
                         {["All", "admin", "supervisor", "user"].map(role => (
                             <button
                                 key={role}
-                                onClick={() => setSelectedRole}
+                                onClick={() => setSelectedRole(role as "admin" | "supervisor" | "user" | "All")}
                                 disabled={selectedRole === role}
                             >
                                 {role.charAt(0).toUpperCase() + role.slice(1)}
@@ -91,11 +86,11 @@ export default function Home() {
                         firstname={user.firstname}
                         lastname={user.lastname}
                         username={user.username}
-                        eMail={user.eMail} // Předáváme eMail jako email
+                        eMail={user.eMail}
                         age={user.age}
                         role={user.role}
                         onDelete={() => setConfirmDeleteUser(user)}
-                        sessionUserRole="admin" // Mělo by být dynamické
+                        sessionUserRole="admin"
                     />
                 ))}
             </div>
@@ -111,7 +106,7 @@ export default function Home() {
                             ?
                         </p>
                         <div className={styles.confirmButtons}>
-                            <button onClick={() => handleDeleteUser(confirmDeleteUser.eMail)}>
+                            <button onClick={() => handleDeleteUser(confirmDeleteUser.username)}>
                                 Ano
                             </button>
                             <button onClick={() => setConfirmDeleteUser(null)}>
