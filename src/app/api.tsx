@@ -92,19 +92,32 @@ export async function updateUser(username:string, firstname:string, lastname:str
     }
     await updateUserResponse();
 }
-export async function GetUsers(){
-    const response = await fetch('https://localhost:5000/api/UM/GetUsers', {
-        method: 'GET', cache: 'no-store',
-    });
 
-    if (response.ok) {
-        console.log(`Získání uživatelů úspěšné: ${response.status}`);
-    } else {
-        console.log(`Získání uživatelů selhalo: ${response.status}`);
+export async function GetUsers(): Promise<User[]> {
+    try {
+        const response = await fetch('https://localhost:5000/api/UM/GetUsers', {
+            cache: 'no-store',
+        });
+
+        if (!response.ok) {
+            throw new Error(`Chyba serveru: ${response.status}`);
+        }
+
+        const data: unknown = await response.json();
+        console.log('Získaná data:', data);
+
+        if (!Array.isArray(data)) {
+            throw new Error('Očekáváno pole uživatelů');
+        }
+
+        // Nepovinně: můžeš si ověřit tvar dat (např. pomocí zod nebo ručně)
+        return data as User[];
+    } catch (error) {
+        console.error('Chyba při získávání uživatelů:', error);
+        return [];
     }
-
-    return await response.json();
 }
+
 // Volání funkce (například v serverové komponentě nebo efektu)
 // const users = await GetUsers();
 // export async function GetUsers(){
