@@ -4,6 +4,27 @@ import styles from './page.module.css';
 import RoleSelector from "@/component/roleselector/RoleSelector";
 import {useRouter} from "next/navigation";
 import {createUser} from "@/app/api";
+
+class User {
+    firstname: string;
+    lastname: string;
+    username: string;
+    password: string;
+    eMail: string;
+    age: number;
+    role: string;
+
+    constructor(firstName: string, lastName: string, username: string, password: string, eMail: string, age: number, role: string) {
+        this.firstname = firstName;
+        this.lastname = lastName;
+        this.username = username;
+        this.password = password;
+        this.eMail = eMail;
+        this.age = age;
+        this.role = role;
+    }
+}
+
 export default function Home() {
     const router = useRouter();
     const [role, setRole] = useState('user');
@@ -16,18 +37,18 @@ export default function Home() {
     const [error, setError] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
-        console.log ("volám create user");
-        const user = new User (firstName, lastName, username, password, eMail, Number(age), role);
+        e.preventDefault();
+        console.log("volám create user");
+        const user = new User(firstName, lastName, username, password, eMail, Number(age), role);
         const result = await createUser(user);
         if (result) {
-            console.log(`Přidán nový uživatel ${username}.`)
+            console.log(`Přidán nový uživatel ${username}.`);
             router.push("/panel");
-        }
-        else {
+        } else {
             setError("Akce se nazdařila");
-            alert(`Chyba: ${e}.`)
         }
     };
+
     return (
         <main>
             <header className={styles.headings}>

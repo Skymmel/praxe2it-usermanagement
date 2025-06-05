@@ -47,6 +47,16 @@ export async function deleteUser(username: string): Promise<void> {
     };
     await deleteUserResponse();
 }
+export interface User {
+    firstname: string;
+    lastname: string;
+    username: string;
+    password: string;
+    eMail: string;
+    age: number;
+    role: string;
+}
+
 export async function createUser(
     user: User
 ): Promise<boolean> {
@@ -71,7 +81,7 @@ export async function createUser(
     }
 }
 
-export async function updateUser(username:string. user: User) {
+export async function updateUser(username:string, user: User) {
     const updateUserResponse = async () => {
         const response = await fetch(`https://localhost:5000/api/UM/UpdateUser?username=${encodeURIComponent(username)}`, {
             headers: {
@@ -96,15 +106,7 @@ export async function updateUser(username:string. user: User) {
     }
     await updateUserResponse();
 }
-export interface User {
-    firstname: string;
-    lastname: string;
-    username: string;
-    password: string;
-    eMail: string;
-    age: number;
-    role: string;
-}
+
 
 export async function GetUsers(): Promise<User[]> {
     try {
