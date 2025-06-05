@@ -6,8 +6,8 @@ import {useRouter} from "next/navigation";
 import {createUser} from "@/app/api";
 
 class User {
-    firstname: string;
-    lastname: string;
+    name: string;
+    surname: string;
     username: string;
     password: string;
     eMail: string;
@@ -15,8 +15,8 @@ class User {
     role: string;
 
     constructor(firstName: string, lastName: string, username: string, password: string, eMail: string, age: number, role: string) {
-        this.firstname = firstName;
-        this.lastname = lastName;
+        this.name = firstName;
+        this.surname = lastName;
         this.username = username;
         this.password = password;
         this.eMail = eMail;

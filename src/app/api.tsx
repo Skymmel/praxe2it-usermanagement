@@ -48,11 +48,11 @@ export async function deleteUser(username: string): Promise<void> {
     await deleteUserResponse();
 }
 export interface User {
-    firstname: string;
-    lastname: string;
+    name: string;       // místo firstname
+    surname: string;    // místo lastname
     username: string;
     password: string;
-    eMail: string;
+    eMail: string | null;
     age: number;
     role: string;
 }
@@ -65,8 +65,8 @@ export async function createUser(
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                name: user.firstname,
-                surname: user.lastname,
+                name: user.name,
+                surname: user.surname,
                 username: user.username,
                 password: user.password,
                 eMail: user.eMail,
@@ -89,8 +89,8 @@ export async function updateUser(username:string, user: User) {
             },
             method: 'PUT',
             body: JSON.stringify({
-                'name': user.firstname,
-                'surname': user.lastname,
+                'name': user.name,
+                'surname': user.surname,
                 'username': user.username,
                 'password': user.password,
                 'eMail': user.eMail,
