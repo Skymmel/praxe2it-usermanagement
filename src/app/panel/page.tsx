@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import UserCard from "@/component/usercard/UserCard";
+import {UserCard} from "@/component/usercard/UserCard";
 import SearchBar from "@/component/searchbar/SearchBar";
 import { GetUsers, User } from "../api";
 
@@ -41,12 +41,12 @@ export default function Home() {
     return (
         <main>
             <header className={styles.header}>
-                <h2>Uživatelé</h2>
-                <p>Správa uživatelů</p>
+                <h2>Users</h2>
+                <p>User management</p>
             </header>
 
             <div className={styles.panel}>
-                <span>Filtry</span>
+                <span>Filters</span>
                 <div className={styles.filters}>
                     <div className={styles.filtersByRole}>
                         {["All", "admin", "supervisor", "user"].map(role => (
@@ -77,6 +77,7 @@ export default function Home() {
                         eMail={user.eMail ?? "N/A"}
                         age={user.age}
                         role={user.role}
+                        password={""}
                     />
                 ))}
             </div>

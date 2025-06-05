@@ -33,23 +33,31 @@ export async function logout(username: string): Promise<void> {
 
     await logoutResponse();
 }
-export async function deleteUser(username: string): Promise<void> {
-    const deleteUserResponse = async () => {
-        const response = await fetch (`https://localhost:5000/api/UM/DeleteUser?username=${encodeURIComponent(username)}`, {
-                headers: {'Content-Type': 'application/json'},
-                method: 'PUT'
+export async function deleteUser(username: string): Promise<boolean> {
+    try {
+        const response = await fetch(`https://localhost:5000/api/UM/DeleteUser?username=${encodeURIComponent(username)}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
         });
+
         if (response.ok) {
-            console.log('Vymazání úspěšné (status:', response.status, ')');
+            console.log('Uživatel úspěšně smazán (status:', response.status, ')');
+            return true;
         } else {
-            console.error('Vymazání selhalo (status:', response.status, ')');
+            console.error('Mazání uživatele selhalo (status:', response.status, ')');
+            return false;
         }
-    };
-    await deleteUserResponse();
+    } catch (error) {
+        console.error('Chyba při mazání uživatele:', error);
+        return false;
+    }
 }
+
 export interface User {
-    name: string;       // místo firstname
-    surname: string;    // místo lastname
+    name: string;
+    surname: string;
     username: string;
     password: string;
     eMail: string | null;
@@ -86,6 +94,7 @@ export async function updateUser(username:string, user: User) {
         const response = await fetch(`https://localhost:5000/api/UM/UpdateUser?username=${encodeURIComponent(username)}`, {
             headers: {
                 'Content-Type': 'application/json',
+                method: 'GET',
             },
             method: 'PUT',
             body: JSON.stringify({
@@ -111,6 +120,7 @@ export async function updateUser(username:string, user: User) {
 export async function GetUsers(): Promise<User[]> {
     try {
         const response = await fetch('https://localhost:5000/api/UM/GetUsers', {
+            method: 'GET',
             cache: 'no-store',
         });
 

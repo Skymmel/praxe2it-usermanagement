@@ -48,7 +48,6 @@ export default function Home() {
             setError("Akce se nazdařila");
         }
     };
-
     return (
         <main>
             <header className={styles.headings}>
