@@ -43,7 +43,6 @@ export default function EditUserPage() {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         await updateUser(username, user);
-        alert("Uživatel upraven!");
         router.push("/panel");
     }
 
