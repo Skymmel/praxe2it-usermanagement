@@ -150,6 +150,8 @@ export async function GetUser(username: string): Promise<User | null> {
         return null;
     }
 }
-
+export async function IsLoggedIn(): Promise<boolean> {
+    return localStorage.getItem("isLoggedIn") === "true";
+}
 
 

@@ -4,13 +4,35 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import {UserCard} from "@/component/usercard/UserCard";
 import SearchBar from "@/component/searchbar/SearchBar";
-import { GetUsers, User } from "../api";
+import {GetUser, GetUsers, User} from "../api";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
     const [users, setUsers] = useState<User[]>([]);
     const [query, setQuery] = useState("");
     const [selectedRole, setSelectedRole] = useState<"admin" | "supervisor" | "user" | "All">("All");
     const [loading, setLoading] = useState(true);
+
+    const router = useRouter();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [loggedUser, setLoggedUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+        const storedUsername = localStorage.getItem("username");
+
+        if (loggedIn && storedUsername) {
+            setIsLoggedIn(true);
+            GetUser(storedUsername).then(userData => {
+                if (userData) {
+                    setLoggedUser(userData);
+                }
+            });
+        } else {
+            console.log("Uživatel není přihlášen.");
+            router.push("/");
+        }
+    }, [router]);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -59,9 +81,12 @@ export default function Home() {
                             </button>
                         ))}
                     </div>
-
                     <div className={styles.searchAndAddUser}>
-                        <a href="/adduser/">Přidat uživatele</a>
+                        {loggedUser ? (
+                            loggedUser.role !== "user" && (
+                                <a href="/adduser/">Add user</a>
+                            )
+                        ) : null}
                         <SearchBar value={query} onChange={setQuery} />
                     </div>
                 </div>
@@ -78,6 +103,7 @@ export default function Home() {
                         age={user.age}
                         role={user.role}
                         password={""}
+                        loggedUserRole={loggedUser?.role ?? null}
                     />
                 ))}
             </div>

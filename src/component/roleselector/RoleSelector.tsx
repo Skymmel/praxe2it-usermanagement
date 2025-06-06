@@ -1,47 +1,31 @@
 'use client';
 import React from 'react';
-import './roleselector.css'; // nebo použij `module.css` dle struktury
+import './roleselector.css';
 
 type Props = {
     role: string;
     setRole: (role: string) => void;
+    disabledRoles?: string[];
 };
 
-export default function RoleSelector({ role, setRole }: Props) {
+export default function RoleSelector({ role, setRole, disabledRoles = [] }: Props) {
+    const roles = ['user', 'supervisor', 'admin'];
+
     return (
         <div className="role-selector">
-            <label className={role === 'user' ? 'active' : ''}>
-                <input
-                    type="radio"
-                    name="role"
-                    value="user"
-                    checked={role === 'user'}
-                    onChange={() => setRole('user')}
-                />
-                USER
-            </label>
-
-            <label className={role === 'supervisor' ? 'active' : ''}>
-                <input
-                    type="radio"
-                    name="role"
-                    value="supervisor"
-                    checked={role === 'supervisor'}
-                    onChange={() => setRole('supervisor')}
-                />
-                SUPERVISOR
-            </label>
-
-            <label className={role === 'admin' ? 'active' : ''}>
-                <input
-                    type="radio"
-                    name="role"
-                    value="admin"
-                    checked={role === 'admin'}
-                    onChange={() => setRole('admin')}
-                />
-                ADMIN
-            </label>
+            {roles.map(r => (
+                <label key={r} className={role === r ? 'active' : ''}>
+                    <input
+                        type="radio"
+                        name="role"
+                        value={r}
+                        checked={role === r}
+                        onChange={() => setRole(r)}
+                        disabled={disabledRoles.includes(r)}
+                    />
+                    {r.toUpperCase()}
+                </label>
+            ))}
         </div>
     );
 }

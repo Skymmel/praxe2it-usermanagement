@@ -3,7 +3,11 @@ import { deleteUser, User } from "@/app/api";
 import {usePathname, useRouter} from "next/navigation";
 
 
-export function UserCard({name, surname, username, eMail, age, role}: User) {
+type Props = User & {
+    loggedUserRole: string | null;
+};
+
+export function UserCard({ name, surname, username, eMail, age, role, loggedUserRole }: Props) {
     const initials = `${name?.charAt(0) ?? "?"}${surname?.charAt(0) ?? "?"}`.toUpperCase();
     const router = useRouter();
     const pathname = usePathname();
@@ -42,7 +46,7 @@ export function UserCard({name, surname, username, eMail, age, role}: User) {
                     <li>{age}</li>
                 </ul>
             </div>
-            {/* Zobrazit pouze pokud má přihlášený uživatel roli admin */}
+            {loggedUserRole === "admin" && (
             <div className="actions">
                 <button className="edit" title="Upravit uživatele" onClick={handleEdit}>
                     <svg
@@ -73,7 +77,7 @@ export function UserCard({name, surname, username, eMail, age, role}: User) {
                     </svg>
                 </button>
             </div>
-
+            )}
         </div>
     );
 }

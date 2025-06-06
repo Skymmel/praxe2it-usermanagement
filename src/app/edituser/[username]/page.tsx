@@ -1,5 +1,5 @@
 "use client";
-
+import styles from "./page.module.css";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { GetUser, updateUser, User } from "@/app/api";
@@ -50,13 +50,16 @@ export default function EditUserPage() {
     if (loading) return <p>Načítání...</p>;
 
     return (
-        <main style={{ padding: "2rem", maxWidth: 600, margin: "0 auto" }}>
-            <h2>Editace uživatele: {username}</h2>
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                <input name="name" value={user.name} onChange={handleChange} placeholder="Jméno" />
-                <input name="surname" value={user.surname} onChange={handleChange} placeholder="Příjmení" />
-                <input name="username" value={user.username} disabled />
-                <input name="eMail" value={user.eMail ?? ""} onChange={handleChange} placeholder="Email" />
+        <main>
+            <header className={styles.headings}>
+                <h2>User editor</h2>
+                <p>Editing a user account</p>
+            </header>
+            <form onSubmit={handleSubmit} className={styles.form}>
+                <input type={"text"} name="name" value={user.name} onChange={handleChange} placeholder="Jméno" />
+                <input type={"text"} name="surname" value={user.surname} onChange={handleChange} placeholder="Příjmení" />
+                <input className={styles.username} type={"text"} name="username" value={user.username} disabled />
+                <input type={"text"} name="eMail" value={user.eMail ?? ""} onChange={handleChange} placeholder="Email" />
                 <input name="age" type="number" value={user.age} onChange={handleChange} placeholder="Věk" />
                 <select name="role" value={user.role} onChange={handleChange}>
                     <option value="admin">Admin</option>
@@ -64,7 +67,7 @@ export default function EditUserPage() {
                     <option value="user">User</option>
                 </select>
                 <input name="password" value={user.password} onChange={handleChange} placeholder="Heslo" type="password" />
-                <button type="submit">Uložit</button>
+                <input type="submit" value={"Update"} />
             </form>
         </main>
     );

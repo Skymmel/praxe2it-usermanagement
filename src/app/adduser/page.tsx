@@ -38,7 +38,6 @@ export default function Home() {
     const [error, setError] = useState("");
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [loggedUsername, setLoggedLoggedUsername] = useState<string | null>(null);
     const [loggedUser, setLoggedUser] = useState<User | null>(null);
 
     useEffect(() => {
@@ -47,34 +46,42 @@ export default function Home() {
 
         if (loggedIn && storedUsername) {
             setIsLoggedIn(true);
-            setLoggedLoggedUsername(storedUsername);
-
             GetUser(storedUsername).then(userData => {
                 if (userData) {
                     setLoggedUser(userData);
+                    if (userData.role === "user") {
+                        router.push("/"); // přesměrování pro běžného uživatele
+                    }
                 }
             });
-            console.log(`Logged in: ${loggedUser?.role}`);
         } else {
             console.log("Uživatel není přihlášen.");
         }
-    }, []);
+    }, [router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("volám create user");
+
+        // Supervisor nemůže vytvořit admina ani jiného supervisora
+        if (loggedUser?.role === 'supervisor' && (role === 'admin' || role === 'supervisor')) {
+            setError("Supervisor může vytvářet pouze uživatele s rolí 'user'.");
+            return;
+        }
+
         const user = new User(firstName, lastName, username, password, eMail, Number(age), role);
         const result = await createUser(user);
         if (result) {
-            console.log(`Přidán nový uživatel ${username}.`);
             router.push("/panel");
         } else {
-            setError("Akce se nazdařila");
+            setError("Akce se nezdařila");
         }
     };
+
+    const isAllowed = loggedUser?.role === "admin" || loggedUser?.role === "supervisor";
+
     return (
         <main>
-            {isLoggedIn && loggedUser?.role=="admin" ? (
+            {isLoggedIn && isAllowed ? (
                 <>
                     <header className={styles.headings}>
                         <h2>Add user</h2>
@@ -93,7 +100,7 @@ export default function Home() {
                         <input
                             type="text"
                             name="firstName"
-                            placeholder="First name"
+                            placeholder="NAME"
                             value={firstName}
                             onChange={event => setFirstName(event.target.value)}
                             required
@@ -101,7 +108,7 @@ export default function Home() {
                         <input
                             type="text"
                             name="lastName"
-                            placeholder="Last name"
+                            placeholder="SURNAME"
                             value={lastName}
                             onChange={event => setLastName(event.target.value)}
                             required
@@ -109,7 +116,7 @@ export default function Home() {
                         <input
                             type="number"
                             name="dob"
-                            placeholder="Age"
+                            placeholder="AGE"
                             value={age}
                             onChange={event => setAge(event.target.value)}
                             required
@@ -117,7 +124,7 @@ export default function Home() {
                         <input
                             type="email"
                             name="eMail"
-                            placeholder="E-mail"
+                            placeholder="E-MAIL"
                             value={eMail}
                             onChange={event => setEmail(event.target.value)}
                             required
@@ -125,21 +132,25 @@ export default function Home() {
                         <input
                             type="password"
                             name="password"
-                            placeholder="Password"
+                            placeholder="PASSWORD"
                             value={password}
                             onChange={event => setPassword(event.target.value)}
                             required
                         />
-                        <RoleSelector role={role} setRole={setRole}/>
+
+                        <RoleSelector
+                            role={role}
+                            setRole={setRole}
+                            disabledRoles={loggedUser?.role === "supervisor" ? ["admin", "supervisor"] : []}
+                        />
+
                         {error && <p style={{ color: "red" }}>{error}</p>}
                         <input type="submit" value="Add user"/>
                     </form>
                 </>
-                ) : (
-                    <>you are not logged</>
+            ) : (
+                <p>Nemáte oprávnění zobrazit tuto stránku.</p>
             )}
-                {}
-
         </main>
     );
 }

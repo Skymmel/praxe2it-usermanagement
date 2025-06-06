@@ -19,7 +19,7 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
-    input[type="email"], input[type="password"], input[type="text"], input[type="submit"], input[type="number"] {
+    input[type="text"], input[type="password"], input[type="number"], input[type="submit"], select {
         height: 56px;
         font-size: 16px;
         font-weight: 600;
@@ -28,10 +28,11 @@
         display: flex;
         border-radius: 8px;
     }
-    input[type="email"], input[type="password"] {
+    input[type="text"], input[type="password"], input[type="number"], select {
         color: #373737;
         background-color: white;
     }
+
     input[type="submit"] {
         background: linear-gradient(#555555, #333333);
         color: white;
@@ -43,9 +44,7 @@
         display: flex;
         gap: 10px;
     }
-    input[type="checkbox"] {
-        border-radius: 6px;
-        height: 16px;
-        width: 16px;
-    }
+}
+.username {
+    background-color: #474747 !important;
 }
