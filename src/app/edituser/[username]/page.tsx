@@ -7,6 +7,27 @@ import { GetUser, updateUser, User } from "@/app/api";
 export default function EditUserPage() {
     const { username } = useParams<{ username: string }>();
     const router = useRouter();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [loggedUser, setLoggedUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+        const storedUsername = localStorage.getItem("username");
+
+        if (loggedIn && storedUsername) {
+            setIsLoggedIn(true);
+            GetUser(storedUsername).then(userData => {
+                if (userData) {
+                    setLoggedUser(userData);
+                    if (userData.role != "admin") {
+                        router.push("/"); // přesměrování pro běžného uživatele
+                    }
+                }
+            });
+        } else {
+            console.log("Uživatel není přihlášen.");
+        }
+    }, [router]);
 
     const [user, setUser] = useState<User>({
         name: "",
