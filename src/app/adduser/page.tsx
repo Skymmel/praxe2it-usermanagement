@@ -1,9 +1,9 @@
 'use client';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import styles from './page.module.css';
 import RoleSelector from "@/component/roleselector/RoleSelector";
 import {useRouter} from "next/navigation";
-import {createUser} from "@/app/api";
+import {createUser, GetUser} from "@/app/api";
 
 class User {
     name: string;
@@ -27,6 +27,7 @@ class User {
 
 export default function Home() {
     const router = useRouter();
+
     const [role, setRole] = useState('user');
     const [username, setUsername] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -35,6 +36,29 @@ export default function Home() {
     const [eMail, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState("");
+
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [loggedUsername, setLoggedLoggedUsername] = useState<string | null>(null);
+    const [loggedUser, setLoggedUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+        const storedUsername = localStorage.getItem("username");
+
+        if (loggedIn && storedUsername) {
+            setIsLoggedIn(true);
+            setLoggedLoggedUsername(storedUsername);
+
+            GetUser(storedUsername).then(userData => {
+                if (userData) {
+                    setLoggedUser(userData);
+                }
+            });
+            console.log(`Logged in: ${loggedUser?.role}`);
+        } else {
+            console.log("Uživatel není přihlášen.");
+        }
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -50,64 +74,72 @@ export default function Home() {
     };
     return (
         <main>
-            <header className={styles.headings}>
-                <h2>Add user</h2>
-                <p>Creating a user account</p>
-            </header>
+            {isLoggedIn && loggedUser?.role=="admin" ? (
+                <>
+                    <header className={styles.headings}>
+                        <h2>Add user</h2>
+                        <p>Creating a user account</p>
+                    </header>
 
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="USERNAME"
-                    value={username}
-                    onChange={event => setUsername(event.target.value)}
-                    required
-                />
-                <input
-                    type="text"
-                    name="firstName"
-                    placeholder="First name"
-                    value={firstName}
-                    onChange={event => setFirstName(event.target.value)}
-                    required
-                />
-                <input
-                    type="text"
-                    name="lastName"
-                    placeholder="Last name"
-                    value={lastName}
-                    onChange={event => setLastName(event.target.value)}
-                    required
-                />
-                <input
-                    type="number"
-                    name="dob"
-                    placeholder="Age"
-                    value={age}
-                    onChange={event => setAge(event.target.value)}
-                    required
-                />
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="E-mail"
-                    value={eMail}
-                    onChange={event => setEmail(event.target.value)}
-                    required
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={event => setPassword(event.target.value)}
-                    required
-                />
-                <RoleSelector role={role} setRole={setRole}/>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                <input type="submit" value="Add user"/>
-            </form>
+                    <form onSubmit={handleSubmit} className={styles.form}>
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="USERNAME"
+                            value={username}
+                            onChange={event => setUsername(event.target.value)}
+                            required
+                        />
+                        <input
+                            type="text"
+                            name="firstName"
+                            placeholder="First name"
+                            value={firstName}
+                            onChange={event => setFirstName(event.target.value)}
+                            required
+                        />
+                        <input
+                            type="text"
+                            name="lastName"
+                            placeholder="Last name"
+                            value={lastName}
+                            onChange={event => setLastName(event.target.value)}
+                            required
+                        />
+                        <input
+                            type="number"
+                            name="dob"
+                            placeholder="Age"
+                            value={age}
+                            onChange={event => setAge(event.target.value)}
+                            required
+                        />
+                        <input
+                            type="email"
+                            name="eMail"
+                            placeholder="E-mail"
+                            value={eMail}
+                            onChange={event => setEmail(event.target.value)}
+                            required
+                        />
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={event => setPassword(event.target.value)}
+                            required
+                        />
+                        <RoleSelector role={role} setRole={setRole}/>
+                        {error && <p style={{ color: "red" }}>{error}</p>}
+                        <input type="submit" value="Add user"/>
+                    </form>
+                </>
+                ) : (
+                    <>you are not logged</>
+            )}
+                {}
+
         </main>
     );
 }

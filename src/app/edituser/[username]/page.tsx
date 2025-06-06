@@ -55,6 +55,7 @@ export default function EditUserPage() {
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 <input name="name" value={user.name} onChange={handleChange} placeholder="Jméno" />
                 <input name="surname" value={user.surname} onChange={handleChange} placeholder="Příjmení" />
+                <input name="username" value={user.username} disabled />
                 <input name="eMail" value={user.eMail ?? ""} onChange={handleChange} placeholder="Email" />
                 <input name="age" type="number" value={user.age} onChange={handleChange} placeholder="Věk" />
                 <select name="role" value={user.role} onChange={handleChange}>

@@ -1,18 +1,21 @@
 import "./userCard.css";
 import { deleteUser, User } from "@/app/api";
-import { useRouter } from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 
 
 export function UserCard({name, surname, username, eMail, age, role}: User) {
     const initials = `${name?.charAt(0) ?? "?"}${surname?.charAt(0) ?? "?"}`.toUpperCase();
     const router = useRouter();
+    const pathname = usePathname();
 
     const handleRemove = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("volám deleteUser");
+        console.log("Mazání uživatele:", username);
         const result = await deleteUser(username);
         if (result) {
             console.log(`Smazán uživatel ${username}.`);
+            router.push(pathname);
+
         } else {
             console.log("Akce se nazdařila - mazání uživatele se nezdařilo");
         }

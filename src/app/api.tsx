@@ -8,13 +8,17 @@ export async function login(username: string, password: string): Promise<boolean
 
         if (response.ok) {
             console.log('Přihlášení úspěšné (status:', response.status, ')');
+            localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("username", username); // volitelné
             return true;
         } else {
             console.error('Přihlášení selhalo (status:', response.status, ')');
+            localStorage.setItem("isLoggedIn", "false");
             return false;
         }
     } catch (error) {
         console.error('Chyba při přihlašování:', error);
+        localStorage.setItem("isLoggedIn", "false");
         return false;
     }
 }
@@ -37,9 +41,6 @@ export async function deleteUser(username: string): Promise<boolean> {
     try {
         const response = await fetch(`https://localhost:5000/api/UM/DeleteUser?username=${encodeURIComponent(username)}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
         });
 
         if (response.ok) {
@@ -60,7 +61,7 @@ export interface User {
     surname: string;
     username: string;
     password: string;
-    eMail: string | null;
+    eMail: string;
     age: number;
     role: string;
 }
@@ -92,11 +93,10 @@ export async function createUser(
 export async function updateUser(username:string, user: User) {
     const updateUserResponse = async () => {
         const response = await fetch(`https://localhost:5000/api/UM/UpdateUser?username=${encodeURIComponent(username)}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                method: 'GET',
             },
-            method: 'PUT',
             body: JSON.stringify({
                 'name': user.name,
                 'surname': user.surname,
@@ -141,17 +141,15 @@ export async function GetUsers(): Promise<User[]> {
     }
 }
 export async function GetUser(username: string): Promise<User | null> {
-    const response = await fetch('https://localhost:5000/api/UM/GetUsers', {
-        method: 'GET',
-        cache: 'no-store',
-    });
-    if (!response.ok) {
-        console.log(`Získání uživatelů selhalo: ${response.status}`);
+    try {
+        const users: User[] = await GetUsers();
+        const user = users.find(u => u.username === username);
+        return user ?? null;
+    } catch (error) {
+        console.error("Chyba při získávání uživatele:", error);
         return null;
     }
-    const users: User[] = await response.json();
-    const user = users.find(u => u.username === username);
-    return user ?? null;
 }
+
 
 

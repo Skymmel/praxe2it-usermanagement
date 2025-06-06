@@ -15,6 +15,7 @@ export default function LoginPage() {
         console.log ("volám login");
         const result = await login (username, password);
         if (result) {
+            router.refresh()
             router.push("/panel");
         } else {
             setError("Invalid username or password");
